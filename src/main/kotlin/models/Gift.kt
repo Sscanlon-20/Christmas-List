@@ -9,7 +9,6 @@ data class Gift (var giftId: Int = 0,
                  var recommendedGender: Char = 'n')
 {
     override fun toString(): String {
-        //TODO Lift Return out in labs
             return "${giftId}Id: $giftName ($cost) $whereToBuy [$category] $minAge $recommendedGender"
     }
 

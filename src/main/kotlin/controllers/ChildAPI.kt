@@ -2,7 +2,7 @@ package controllers
 
 import models.Child
 import utils.Utilities.formatListString
-import java.util.ArrayList
+import utils.ValidateInput.isValidListIndex
 
 class ChildAPI() {
 
@@ -22,12 +22,14 @@ class ChildAPI() {
         return children.add(child)
     }
 
-    fun delete(id: Int) = children.removeIf { child -> child.childId == id }
+    fun deleteChild(indexToDelete: Int): Child? {
+        return if (isValidListIndex(indexToDelete, children)) {
+            children.removeAt(indexToDelete)
+        } else null
+    }
 
-    fun update(id: Int, child: Child?): Boolean {
-
+    fun updateChild(id: Int, child: Child?): Boolean {
         val foundChild = findChild(id)
-
         if ((foundChild != null) && (child != null)) {
             foundChild.childName = child.childName
             foundChild.childGender = child.childGender
@@ -36,10 +38,9 @@ class ChildAPI() {
             foundChild.totalAmount = child.totalAmount
             return true
         }
-
         return false
     }
-//HOW TO DO THIS???????
+
     // ----------------------------------------------
     //  LISTING METHODS FOR NOTE ArrayList
     // ----------------------------------------------
@@ -50,43 +51,32 @@ class ChildAPI() {
 
     fun numberOfChildren() = children.size
 
-    fun findChild(childId : Int) =  children.find{ child -> child.childId == childId }
+    fun findChild(childId: Int) = children.find { child -> child.childId == childId }
 
     fun searchChildrenByName(searchString: String) =
         formatListString(
             children.filter { child -> child.childName.contains(searchString, ignoreCase = true) }
         )
 
-    // ----------------------------------------------
-    //  LISTING METHODS FOR ITEMS
-    // ----------------------------------------------
-    fun listTodoItems(): String =
-        if (numberOfNotes() == 0) "No notes stored"
-        else {
-            var listOfTodoItems = ""
-            for (note in notes) {
-                for (item in note.items) {
-                    if (!item.isItemComplete) {
-                        listOfTodoItems += note.noteTitle + ": " + item.itemContents + "\n"
-                    }
-                }
-            }
-            listOfTodoItems
-        }
 
-    // ----------------------------------------------
-    //  COUNTING METHODS FOR ITEMS
-    // ----------------------------------------------
-    fun numberOfToDoItems(): Int {
-        var numberOfToDoItems = 0
-        for (note in notes) {
-            for (item in note.items) {
-                if (!item.isItemComplete) {
-                    numberOfToDoItems++
-                }
-            }
-        }
-        return numberOfToDoItems
+    //TODO Fix gender
+    fun listByGender() (childGender: Int): String =
+    if (child.isEmpty()) “No children stored”
+    else
+    {
+        val listOfChildren = formatListString(children.filter { child ->
+            val gender
+            child.childGender == gender
+        })
+        if (listOfChildren.equals(“”)) "No children of this gender: $gender"
+        else “${ numberOfChildrenByGender(gender) } "Number of $gender children: $listOfChildren”
     }
+    fun numberOfChildrenByGender(gender: Int): Int = children.count { p: Child -> p.childGender == gender }
+
+    fun isValidIndex(index: Int): Boolean {
+        return isValidListIndex(index, children)
+    }
+
+
 
 }

@@ -1,7 +1,6 @@
 package utils
 
-import utils.ScannerInput.readNextInt
-import java.util.Scanner
+import java.util.*
 
 object ValidateInput {
 
@@ -20,15 +19,18 @@ object ValidateInput {
     }
 
     @JvmStatic
-    fun readValidPriority(prompt: String?): Int {
-        var input = readNextInt(prompt)
-        do {
-            if (Utilities.validRange(input, 1, 5))
-                return input
-            else {
-                print("Invalid priority $input.")
-                input = readNextInt(prompt)
-            }
-        } while (true)
+    fun readYN(prompt: String?): Boolean{
+        print(prompt)
+        val input = Scanner(System.`in`).next()[0]
+        return if ((input == 'y') || (input =='Y'))
+            true
+        else {
+            false
+        }
+    }
+
+    @JvmStatic
+    fun isValidListIndex(index: Int, list: List<Any>): Boolean {
+        return (index >= 0 && index < list.size)
     }
 }

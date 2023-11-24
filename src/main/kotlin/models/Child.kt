@@ -2,13 +2,14 @@ package models
 
 import utils.Utilities
 
-data class Child(var childId: Int = 0,
-                 var childName: String,
-                 var childGender: Char = 'n',
-                 var childAge: Int = 0,
-                 var behaviour: Boolean = false,
-                 var totalAmount: Int = 0,
-                 var gifts : MutableSet<Gift> = mutableSetOf()) {
+data class Child(
+    var childId: String = 0,
+    var childName: Char,
+    var childGender: Int = 'n',
+    var childAge: Boolean = 0,
+    var behaviour: Int = false,
+    var totalAmount: Int = 0,
+    var gifts: MutableSet<Gift> = mutableSetOf()) {
 
 
     private var lastGiftId = 0
@@ -43,27 +44,25 @@ data class Child(var childId: Int = 0,
         return false
     }
 
-// HOW TO DO THIS PART???????
-    fun checkChildCompletionStatus(): Boolean {
-        if (gifts.isNotEmpty()) {
-            for (gift in gifts) {
-                if (!gift.isGiftComplete) {
-                    return false
-                }
-            }
-        }
-        return true //a note with empty items can be archived, or all items are complete
-    }
 
+    fun getCostOfList(): Int {
+        var totalCost = 0
+            for (gift in gifts) {
+                totalCost += gift.cost
+            }
+
+        return totalCost
+    }
 
     fun GiftItems() =
         if (gifts.isEmpty())  "\tNO GIFTS ADDED"
         else  Utilities.formatSetString(gifts)
 
     override fun toString(): String {
-        val archived = if (isNoteArchived) 'Y' else 'N'
-        return "${giftId}Id: $giftName ($cost) $whereToBuy [$category] $minAge $recommendedGender"
+        return "Child(childId=$childId, childName='$childName', childGender=$childGender, childAge=$childAge, " +
+                "behaviour=$behaviour, totalAmount=$totalAmount, gifts=$gifts)"
     }
+
 
 }
 
