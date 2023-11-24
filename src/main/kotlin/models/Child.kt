@@ -3,10 +3,10 @@ package models
 import utils.Utilities
 
 data class Child(
-    var childId: String = 0,
-    var childName: Char,
-    var childGender: Int = 'n',
-    var childAge: Boolean = 0,
+    var childId: Int = 0,
+    var childName: String,
+    var childGender: Char = 'n',
+    var childAge: Int = 0,
     var behaviour: Int = false,
     var totalAmount: Int = 0,
     var gifts: MutableSet<Gift> = mutableSetOf()) {
@@ -60,7 +60,7 @@ data class Child(
 
     override fun toString(): String {
         return "Child(childId=$childId, childName='$childName', childGender=$childGender, childAge=$childAge, " +
-                "behaviour=$behaviour, totalAmount=$totalAmount, gifts=$gifts)"
+                "behaviour=$behaviour, totalAmount=$totalAmount)"
     }
 
 
