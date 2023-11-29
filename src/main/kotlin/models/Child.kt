@@ -7,7 +7,7 @@ data class Child(
     var childName: String,
     var childGender: Char = 'n',
     var childAge: Int = 0,
-    var behaviour: Int = false,
+    var behaviour: Boolean = false,
     var totalAmount: Int = 0,
     var gifts: MutableSet<Gift> = mutableSetOf()) {
 

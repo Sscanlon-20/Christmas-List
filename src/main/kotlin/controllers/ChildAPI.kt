@@ -22,12 +22,9 @@ class ChildAPI() {
         return children.add(child)
     }
 
-    fun deleteChild(indexToDelete: Int): Child? {
-        return if (isValidListIndex(indexToDelete, children)) {
-            children.removeAt(indexToDelete)
-        } else null
-    }
+    fun delete(id: Int) = children.removeIf { child -> child.childId == id }
 
+    //TODO fix
     fun updateChild(id: Int, child: Child?): Boolean {
         val foundChild = findChild(id)
         if ((foundChild != null) && (child != null)) {
@@ -51,31 +48,70 @@ class ChildAPI() {
 
     fun numberOfChildren() = children.size
 
-    fun findChild(childId: Int) = children.find { child -> child.childId == childId }
 
     fun searchChildrenByName(searchString: String) =
         formatListString(
             children.filter { child -> child.childName.contains(searchString, ignoreCase = true) }
         )
 
-
-    //TODO Fix gender
-    fun listByGender() (childGender: Int): String =
-    if (child.isEmpty()) “No children stored”
-    else
+    fun listByGender(gender: Char): String
     {
-        val listOfChildren = formatListString(children.filter { child ->
-            val gender
-            child.childGender == gender
-        })
-        if (listOfChildren.equals(“”)) "No children of this gender: $gender"
-        else “${ numberOfChildrenByGender(gender) } "Number of $gender children: $listOfChildren”
+        return if (children.isEmpty()) "No children stored"
+        else {
+            val listOfChildren = formatListString(children.filter { child ->
+                child.childGender == gender
+            })
+            if (listOfChildren.equals("")) "No children of this gender: $gender"
+            else "${ numberOfChildrenByGender(gender) } $gender children: $listOfChildren"
+        }
     }
-    fun numberOfChildrenByGender(gender: Int): Int = children.count { p: Child -> p.childGender == gender }
+    fun numberOfChildrenByGender(gender: Char): Int = children.count { p: Child -> p.childGender == gender }
 
     fun isValidIndex(index: Int): Boolean {
         return isValidListIndex(index, children)
     }
+
+    // ----------------------------------------------
+    //  SEARCHING METHODS
+    // ---------------------------------------------
+    fun findChild(child : Int) =  children.find{ child -> child.childId == childId }
+
+    fun searchChildByName(searchString: String) =
+        formatListString(
+            children.filter { child -> child.childName.contains(searchString, ignoreCase = true) }
+        )
+
+    fun searchGiftByContents(searchString: String): String {
+        return if (numberOfChildren() == 0) "No notes stored"
+        else {
+            var listOfChildren = ""
+            for (child in children) {
+                for (gift in child.gifts) {
+                    if (gift.giftContents.contains(searchString, ignoreCase = true)) {
+                        listOfChildren += "${child.childId}: ${child.childName} \n\t${gift}\n"
+                    }
+                }
+            }
+            if (listOfChildren == "") "No items found for: $searchString"
+            else listOfChildren
+        }
+    }
+
+    // ----------------------------------------------
+    //  LISTING METHODS FOR ITEMS
+    // ----------------------------------------------
+    fun listGifts(): String =
+        if (numberOfChildren() == 0) "No children stored"
+        else {
+            var listGifts = ""
+            for (child in children) {
+                for (gift in child.gifts) {
+                        listGifts += child.childName + ": " + gift.giftContents + "\n"
+                    }
+                }
+            }
+            listGifts
+        }
 
 
 
