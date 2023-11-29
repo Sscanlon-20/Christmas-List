@@ -167,7 +167,7 @@ fun deleteChild() {
 }
 
 //------------------------------------
-//NOTE REPORTS MENU
+//CHILD REPORTS MENU
 //------------------------------------
 fun searchChildByName() {
     val searchName = readNextLine("Enter the name to search by: ")
@@ -180,7 +180,7 @@ fun searchChildByName() {
 }
 
 //------------------------------------
-//ITEM REPORTS MENU
+//GIFT REPORTS MENU
 //------------------------------------
 fun searchGifts() {
     val searchContents = readNextLine("Enter the gift contents to search by: ")
@@ -193,24 +193,24 @@ fun searchGifts() {
 }
 
 //-------------------------------------------
-//ITEM MENU (only available for active notes)
+//GIFT MENU
 //-------------------------------------------
-private fun addGiftToChildToChild() {
+private fun addGiftToChild() {
     val child: Child? = askUserToChooseChild()
-    if (note != null) {
-        if (note.addItem(Item(itemContents = readNextLine("\t Item Contents: "))))
+    if (child != null) {
+        if (child.addGift(Gift(giftContents = readNextLine("\t Gift Contents: "))))
             println("Add Successful!")
         else println("Add NOT Successful")
     }
 }
 
-fun updateItemContentsInNote() {
-    val note: Note? = askUserToChooseActiveNote()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
-        if (item != null) {
+fun updateGiftDetailsForChild() {
+    val child: Child? = askUserToChooseChild()
+    if (child != null) {
+        val gift: Gift? = askUserToChooseGift(child)
+        if (gift != null) {
             val newContents = readNextLine("Enter new contents: ")
-            if (note.update(item.itemId, Item(itemContents = newContents))) {
+            if (gift.update(gift.giftId, Gift(giftContents = newContents))) {
                 println("Item contents updated")
             } else {
                 println("Item contents NOT updated")
@@ -221,12 +221,12 @@ fun updateItemContentsInNote() {
     }
 }
 
-fun deleteAnItem() {
-    val note: Note? = askUserToChooseActiveNote()
-    if (note != null) {
-        val item: Item? = askUserToChooseItem(note)
-        if (item != null) {
-            val isDeleted = note.delete(item.itemId)
+fun deleteGiftFromChild() {
+    val child: Child? = askUserToChooseChild()
+    if (child != null) {
+        val gift: Gift? = askUserToChooseGift(gift)
+        if (gift != null) {
+            val isDeleted = child.delete(gift.giftId)
             if (isDeleted) {
                 println("Delete Successful!")
             } else {
@@ -241,7 +241,7 @@ fun deleteAnItem() {
     //TODO fix
     fun searchChildren() {
         val searchTitle = readNextLine("Enter the description to search by: ")
-        val searchResults = childAPI.searchChildrenByName(searchName)
+        val searchResults = childAPI.searchChildrenByName(childName)
         if (searchResults.isEmpty()) {
             println("No notes found")
         } else {
@@ -275,30 +275,29 @@ fun exitApp() {
 //HELPER FUNCTIONS
 //------------------------------------
 
-private fun askUserToChooseActiveNote(): Note? {
-    listActiveNotes()
-    if (noteAPI.numberOfActiveNotes() > 0) {
-        val note = noteAPI.findNote(readNextInt("\nEnter the id of the note: "))
-        if (note != null) {
-            if (note.isNoteArchived) {
-                println("Note is NOT Active, it is Archived")
+private fun askUserToChooseChild(): Child? {
+    listChildren()
+    if (childAPI.numberOfChildren() > 0) {
+        val child = childAPI.findChild(readNextInt("\nEnter the id of the child: "))
+        if (child != null) {
+            if (child.isNoteArchived) {
+                println("No child listed")
             } else {
-                return note //chosen note is active
+                return child
             }
         } else {
-            println("Note id is not valid")
+            println("Child id is not valid")
         }
     }
-    return null //selected note is not active
+    return null
 }
 
-private fun askUserToChooseItem(note: Note): Item? {
-    if (note.numberOfItems() > 0) {
-        print(note.listItems())
-        return note.findOne(readNextInt("\nEnter the id of the item: "))
-    }
-    else{
-        println ("No items for chosen note")
+private fun askUserToChooseGift(child: Child): Child? {
+    if (child.numberOfGifts() > 0) {
+        print(child.listGifts())
+        return child.findOne(readNextInt("\nEnter the id of the gift: "))
+    } else {
+        println("No gifts for chosen child")
         return null
     }
 }
