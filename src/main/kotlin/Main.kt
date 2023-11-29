@@ -1,9 +1,11 @@
 import controllers.ChildAPI
 import models.Child
+import models.Gift
 import utils.ScannerInput.readNextChar
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
 import utils.ValidateInput
+import kotlin.system.exitProcess
 
 private val childAPI = ChildAPI()
 
@@ -16,20 +18,19 @@ fun runMenu() {
             3 -> updateChild()
             4 -> deleteChild()
 
-            5 -> addGift()
-            6 -> addGiftToChild()
-            7 -> updateGift()
-            8 -> deleteGift()
+            5 -> addGiftToChild()
+            6 -> updateGiftDetailsForChild()
+            7 -> deleteGiftFromChild()
 
-            9 -> searchChildren()
+            8 -> searchChildByName()
 
-            10 -> searchGifts()
-            11 -> generateAgift()
-            12 -> addOrRemoveGift()
-            13 -> generateASuprise()
+            9 -> searchGifts()
+            10 -> generateAgift()
+            11 -> addOrRemoveGift()
+            12 -> generateASuprise()
 
-            14 -> save()
-            15 -> load()
+            13 -> save()
+            14 -> load()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
@@ -49,10 +50,9 @@ fun mainMenu(): Int {
              > |   4) Delete a child                                   |
              > ---------------------------------------------------------
              > | ITEM MENU                                             | 
-             > |   5) Add gift                                         |
              > |   6) Add gift to a child                              |
-             > |   7) Update a gift                                    |
-             > |   8) Delete a gift                                    |
+             > |   7) Update gift details for a child                  |
+             > |   8) Delete a gift from child                         |
              > ---------------------------------------------------------
              > | REPORT MENU FOR NOTES                                 | 
              > |   9) Search for all children (by name)                |
@@ -105,11 +105,11 @@ fun listChildren() {
     if (childAPI.numberOfChildren() > 0) {
         val option = readNextInt(
             """
-                  > ---------------------------------
-                  > |   1) List all children        |
-                  > |   2) List all boys            |
-                  > |   3) List all children over 3 |
-                  > ---------------------------------
+                  > ----------------------------------
+                  > |   1) List all children         |
+                  > |   2) List children by gender   |
+                  > |   3) List all children over 3  |
+                  > ----------------------------------
          > ==>> """.trimMargin(">")
         )
 
@@ -125,15 +125,12 @@ fun listChildren() {
 }
 
 fun listAllChildren() = println(childAPI.listAllChildren())
-fun listByGender() = println(childAPI.listByGender())
+fun listByGender() = println(childAPI.listByGender()) //TODO fix
 fun listChildrenOver3() = println(childAPI.listChildrenOver3()) //TODO how??
 
-
 fun updateChild() {
-    // logger.info { "updateNotes() function invoked" }
     listChildren()
     if (childAPI.numberOfChildren() > 0) {
-        // only ask the user to choose the note if notes exist
         val indexToUpdate = readNextInt("Enter the index of the child to update: ")
         if (childAPI.isValidIndex(indexToUpdate)) {
             val childName = readNextLine("Enter the child's name: ")
@@ -142,7 +139,11 @@ fun updateChild() {
             val behaviour = ValidateInput.readYN("Was the child good or bad (y/n)? ")
             val totalAmount = readNextInt("How much should the child's gifts amount to? ")
 
-            if (childAPI.updateChild(indexToUpdate, Child(childName, childGender, childAge, behaviour, totalAmount))) {
+            if (childAPI.updateChild(
+                    indexToUpdate,
+                    Child(0, childName, childGender, childAge, behaviour, totalAmount)
+                )
+            ) {
                 println("Update Successful")
             } else {
                 println("Update Failed")
@@ -151,22 +152,91 @@ fun updateChild() {
             println("There are no children with this index number")
         }
     }
+}
 
-    fun deleteChild() {
+fun deleteChild() {
+    listChildren()
+    val id = readNextInt("Enter the id of the child to delete: ")
+    // pass the index of the note to NoteAPI for deleting and check for success.
+    val childToDelete = childAPI.delete(id)
+    if (childToDelete) {
+        println("Delete Successful!")
+    } else {
+        println("Delete NOT Successful")
+    }
+}
 
-        listChildren()
-        if (childAPI.numberOfChildren() > 0) {
-            // only ask the user to choose the note to delete if notes exist
-            val indexToDelete = readNextInt("Enter the index of the child to delete: ")
-            // pass the index of the note to NoteAPI for deleting and check for success.
-            val childToDelete = childAPI.deleteChild(indexToDelete)
-            if (childToDelete != null) {
-                println("Delete Successful! Deleted note: ${childToDelete.childName}")
+//------------------------------------
+//NOTE REPORTS MENU
+//------------------------------------
+fun searchChildByName() {
+    val searchName = readNextLine("Enter the name to search by: ")
+    val searchResults = childAPI.searchChildByName(searchName)
+    if (searchResults.isEmpty()) {
+        println("No children found")
+    } else {
+        println(searchResults)
+    }
+}
+
+//------------------------------------
+//ITEM REPORTS MENU
+//------------------------------------
+fun searchGifts() {
+    val searchContents = readNextLine("Enter the gift contents to search by: ")
+    val searchResults = childAPI.searchGiftByContents(searchContents)
+    if (searchResults.isEmpty()) {
+        println("No items found")
+    } else {
+        println(searchResults)
+    }
+}
+
+//-------------------------------------------
+//ITEM MENU (only available for active notes)
+//-------------------------------------------
+private fun addGiftToChildToChild() {
+    val child: Child? = askUserToChooseChild()
+    if (note != null) {
+        if (note.addItem(Item(itemContents = readNextLine("\t Item Contents: "))))
+            println("Add Successful!")
+        else println("Add NOT Successful")
+    }
+}
+
+fun updateItemContentsInNote() {
+    val note: Note? = askUserToChooseActiveNote()
+    if (note != null) {
+        val item: Item? = askUserToChooseItem(note)
+        if (item != null) {
+            val newContents = readNextLine("Enter new contents: ")
+            if (note.update(item.itemId, Item(itemContents = newContents))) {
+                println("Item contents updated")
+            } else {
+                println("Item contents NOT updated")
+            }
+        } else {
+            println("Invalid Item Id")
+        }
+    }
+}
+
+fun deleteAnItem() {
+    val note: Note? = askUserToChooseActiveNote()
+    if (note != null) {
+        val item: Item? = askUserToChooseItem(note)
+        if (item != null) {
+            val isDeleted = note.delete(item.itemId)
+            if (isDeleted) {
+                println("Delete Successful!")
             } else {
                 println("Delete NOT Successful")
             }
         }
     }
+}
+
+
 
     //TODO fix
     fun searchChildren() {
@@ -196,11 +266,42 @@ fun updateChild() {
         }
     }
 
-    fun exitApp() {
-        logger.info { "exitApp() function invoked" }
-        System.exit(0)
-    }
+fun exitApp() {
+    println("Exiting...bye")
+    exitProcess(0)
+}
 
+//------------------------------------
+//HELPER FUNCTIONS
+//------------------------------------
+
+private fun askUserToChooseActiveNote(): Note? {
+    listActiveNotes()
+    if (noteAPI.numberOfActiveNotes() > 0) {
+        val note = noteAPI.findNote(readNextInt("\nEnter the id of the note: "))
+        if (note != null) {
+            if (note.isNoteArchived) {
+                println("Note is NOT Active, it is Archived")
+            } else {
+                return note //chosen note is active
+            }
+        } else {
+            println("Note id is not valid")
+        }
+    }
+    return null //selected note is not active
+}
+
+private fun askUserToChooseItem(note: Note): Item? {
+    if (note.numberOfItems() > 0) {
+        print(note.listItems())
+        return note.findOne(readNextInt("\nEnter the id of the item: "))
+    }
+    else{
+        println ("No items for chosen note")
+        return null
+    }
+}
 
 
 
