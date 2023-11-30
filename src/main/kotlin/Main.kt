@@ -23,11 +23,12 @@ fun runMenu() {
             7 -> deleteGiftFromChild()
 
             8 -> searchChildByName()
+            9 -> listAllGiftsForChild()
+            10 -> totalCostOfChildList()
 
-            9 -> searchGifts()
-            10 -> generateAgift()
-            11 -> listAllGiftsForChild()
+            11 -> searchGifts()
             12 -> generateASuprise()
+
 
             13 -> save()
             14 -> load()
@@ -37,49 +38,30 @@ fun runMenu() {
     } while (true)
 }
 
-fun generateASuprise() {
-    TODO("Not yet implemented")
-}
 
-fun listAllGiftsForChild() {
-    TODO("Not yet implemented")
-}
-
-fun generateAgift() {
-    TODO("Not yet implemented")
-}
 
 fun mainMenu(): Int {
     var readNextInt = readNextInt(
         """ 
-             > --------------------------------------------------------- 
-             > |          Christmas Shopping List                      |
-             > ---------------------------------------------------------
-             > | NOTE MENU                                             |
-             > |   1) Add a child                                      |
-             > |   2) List children                                    |
-             > |   3) Update a child                                   |
-             > |   4) Delete a child                                   |
-             > ---------------------------------------------------------
-             > | ITEM MENU                                             | 
-             > |   5) Add gift to a child                              |
-             > |   6) Update gift details for a child                  |
-             > |   7) Delete a gift from child                         |
-             > ---------------------------------------------------------
-             > | REPORT MENU FOR NOTES                                 | 
-             > |   8) Search for all children (by name)                |
-             > --------------------------------------------------------- 
-             > | REPORT MENU FOR ITEMS 
-             >     9) Search Gift                                     |                                
-             > |   10) Generate a gift                                 |
-             > |   11) Add or remove gifts (depending on total amount) |
-             > |   12) Generate a surprise (if child is good)          | 
-             > ---------------------------------------------------------
-             > |   13) Save                                            |
-             > |   14) Load                                            |
-             > ---------------------------------------------------------
-             > |   0) Exit                                             |
-             > --------------------------------------------------------- 
+             > -----------------------------------------------------------------------------------------------
+             > |                                  Christmas Shopping List                                    |
+             > -----------------------------------------------------------------------------------------------
+             > | CHILD MENU                                  |  GIFT MENU                                    |
+             > |   1) Add a child                            |    5) Add gift to a child                     |
+             > |   2) List children                          |    6) Update gift details for a child         |
+             > |   3) Update a child                         |    7) Delete a gift from child                |
+             > |   4) Delete a child                         |                                               |
+             > -----------------------------------------------------------------------------------------------
+             > | REPORT MENU FOR CHILDREN                    |  REPORT MENU FOR GIFTS                        |
+             > |   8) Search for all children (by name)      |    11) Search Gift                            |
+             > |   9) Search list of gifts for child         |    12) Generate a surprise (if child is good) |
+             > |   10) Total cost of child's list            |                                               |
+             > -----------------------------------------------------------------------------------------------
+             > |                                          13) Save                                           |
+             > |                                          14) Load                                           |
+             > -----------------------------------------------------------------------------------------------
+             > |                                          0) Exit                                            |
+             > ----------------------------------------------------------------------------------------------- 
              > ==>> """.trimMargin(">")
     )
     return readNextInt
@@ -139,9 +121,9 @@ fun listChildren() {
 fun listAllChildren() = println(childAPI.listAllChildren())
 
 fun listByGender()
-    { val childGender = readNextChar("Enter gender (b or g): ")
-       println(childAPI.listByGender(childGender))
-    }
+{ val childGender = readNextChar("Enter gender (b or g): ")
+    println(childAPI.listByGender(childGender))
+}
 
 fun listChildrenOver3() = println(childAPI.listChildrenOver3())
 
@@ -217,10 +199,10 @@ private fun addGiftToChild() {
     if (child != null) {
         if (child.addGift(Gift(
                 giftName = readNextLine("\t Gift Name: "),
-                whereToBuy = readNextLine("\t Where to buy it"),
+                whereToBuy = readNextLine("\t Where to buy it: "),
                 cost = readNextInt("\t How much is it: "),
                 category = readNextLine("\t What category is it: "),
-        )))
+            )))
             println("Add Successful!")
         else println("Add NOT Successful")
     }
@@ -233,7 +215,7 @@ fun updateGiftDetailsForChild() {
         if (gift != null) {
             if (childAPI.updateGift(child.childId, gift.giftId,
                     Gift(giftName = readNextLine("\t Gift Name: "),
-                        whereToBuy = readNextLine("\t Where to buy it"),
+                        whereToBuy = readNextLine("\t Where to buy it: "),
                         cost = readNextInt("\t How much is it: "),
                         category = readNextLine("\t What category is it: "),))) {
                 println("Item contents updated")
@@ -269,6 +251,18 @@ fun searchChildren() { //todo why greyed out how to fix
     } else {
         println(searchResults)
     }
+}
+
+fun generateASuprise() {
+    TODO("Not yet implemented")
+}
+
+fun listAllGiftsForChild() {
+    TODO("Not yet implemented")
+}
+
+fun totalCostOfChildList() {
+    TODO("Not yet implemented")
 }
 
 //todo fix
@@ -320,13 +314,5 @@ private fun askUserToChooseGift(child: Child): Gift? {
         return null
     }
 }
-
-
-
-
-
-
-
-
 
 

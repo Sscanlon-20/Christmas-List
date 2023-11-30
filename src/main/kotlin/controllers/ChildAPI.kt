@@ -46,8 +46,6 @@ class ChildAPI() {
             foundGift.cost = gift.cost
             foundGift.whereToBuy = gift.whereToBuy
             foundGift.category = gift.category
-            foundGift.minAge = gift.minAge
-            foundGift.recommendedGender = gift.recommendedGender
             return true
         }
         return false
@@ -134,7 +132,7 @@ class ChildAPI() {
                 child.childAge >=3
             })
             if (listOfChildren.equals("")) "No children over 3"
-            else "$   $listOfChildren"
+            else "$listOfChildren"
         }
     }
 

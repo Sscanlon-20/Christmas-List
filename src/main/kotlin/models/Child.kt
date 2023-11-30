@@ -37,8 +37,6 @@ data class Child(
             foundGift.cost = newGift.cost
             foundGift.whereToBuy = newGift.whereToBuy
             foundGift.category = newGift.category
-            foundGift.minAge = newGift.minAge
-            foundGift.recommendedGender = newGift.recommendedGender
             return true
         }
         return false
@@ -47,9 +45,9 @@ data class Child(
 
     fun getCostOfList(): Int { //todo why is it greyed out - fix
         var totalCost = 0
-            for (gift in gifts) {
-                totalCost += gift.cost
-            }
+        for (gift in gifts) {
+            totalCost += gift.cost
+        }
 
         return totalCost
     }
