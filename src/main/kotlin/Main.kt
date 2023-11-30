@@ -26,7 +26,7 @@ fun runMenu() {
 
             9 -> searchGifts()
             10 -> generateAgift()
-            11 -> addOrRemoveGift()
+            11 -> listAllGiftsForChild()
             12 -> generateASuprise()
 
             13 -> save()
@@ -35,6 +35,18 @@ fun runMenu() {
             else -> println("Invalid menu choice: $option")
         }
     } while (true)
+}
+
+fun generateASuprise() {
+    TODO("Not yet implemented")
+}
+
+fun listAllGiftsForChild() {
+    TODO("Not yet implemented")
+}
+
+fun generateAgift() {
+    TODO("Not yet implemented")
 }
 
 fun mainMenu(): Int {
@@ -50,18 +62,18 @@ fun mainMenu(): Int {
              > |   4) Delete a child                                   |
              > ---------------------------------------------------------
              > | ITEM MENU                                             | 
-             > |   6) Add gift to a child                              |
-             > |   7) Update gift details for a child                  |
-             > |   8) Delete a gift from child                         |
+             > |   5) Add gift to a child                              |
+             > |   6) Update gift details for a child                  |
+             > |   7) Delete a gift from child                         |
              > ---------------------------------------------------------
              > | REPORT MENU FOR NOTES                                 | 
-             > |   9) Search for all children (by name)                |
+             > |   8) Search for all children (by name)                |
              > --------------------------------------------------------- 
              > | REPORT MENU FOR ITEMS 
-             >     10) Search Gift                                     |                                
+             >     9) Search Gift                                     |                                
              > |   10) Generate a gift                                 |
              > |   11) Add or remove gifts (depending on total amount) |
-             > |   12) Generate a surprise (if child is good)          |
+             > |   12) Generate a surprise (if child is good)          | 
              > ---------------------------------------------------------
              > |   13) Save                                            |
              > |   14) Load                                            |
@@ -125,8 +137,13 @@ fun listChildren() {
 }
 
 fun listAllChildren() = println(childAPI.listAllChildren())
-fun listByGender() = println(childAPI.listByGender()) //TODO fix
-fun listChildrenOver3() = println(childAPI.listChildrenOver3()) //TODO how??
+
+fun listByGender()
+{ val childGender = readNextChar("Enter gender (b or g): ")
+    println(childAPI.listByGender(childGender))
+}
+
+fun listChildrenOver3() = println(childAPI.listChildrenOver3())
 
 fun updateChild() {
     listChildren()
@@ -198,7 +215,12 @@ fun searchGifts() {
 private fun addGiftToChild() {
     val child: Child? = askUserToChooseChild()
     if (child != null) {
-        if (child.addGift(Gift(giftContents = readNextLine("\t Gift Contents: "))))
+        if (child.addGift(Gift(
+                giftName = readNextLine("\t Gift Name: "),
+                whereToBuy = readNextLine("\t Where to buy it"),
+                cost = readNextInt("\t How much is it: "),
+                category = readNextLine("\t What category is it: "),
+            )))
             println("Add Successful!")
         else println("Add NOT Successful")
     }
@@ -209,8 +231,11 @@ fun updateGiftDetailsForChild() {
     if (child != null) {
         val gift: Gift? = askUserToChooseGift(child)
         if (gift != null) {
-            val newContents = readNextLine("Enter new contents: ")
-            if (gift.update(gift.giftId, Gift(giftContents = newContents))) {
+            if (childAPI.updateGift(child.childId, gift.giftId,
+                    Gift(giftName = readNextLine("\t Gift Name: "),
+                        whereToBuy = readNextLine("\t Where to buy it"),
+                        cost = readNextInt("\t How much is it: "),
+                        category = readNextLine("\t What category is it: "),))) {
                 println("Item contents updated")
             } else {
                 println("Item contents NOT updated")
@@ -224,7 +249,7 @@ fun updateGiftDetailsForChild() {
 fun deleteGiftFromChild() {
     val child: Child? = askUserToChooseChild()
     if (child != null) {
-        val gift: Gift? = askUserToChooseGift(gift)
+        val gift: Gift? = askUserToChooseGift(child)
         if (gift != null) {
             val isDeleted = child.delete(gift.giftId)
             if (isDeleted) {
@@ -236,35 +261,32 @@ fun deleteGiftFromChild() {
     }
 }
 
-
-
-    //TODO fix
-    fun searchChildren() {
-        val searchTitle = readNextLine("Enter the description to search by: ")
-        val searchResults = childAPI.searchChildrenByName(childName)
-        if (searchResults.isEmpty()) {
-            println("No notes found")
-        } else {
-            println(searchResults)
-        }
+fun searchChildren() { //todo why greyed out how to fix
+    val searchChild = readNextLine("Enter the description to search by: ")
+    val searchResults = childAPI.searchChildrenByName(searchChild)
+    if (searchResults.isEmpty()) {
+        println("No notes found")
+    } else {
+        println(searchResults)
     }
+}
 
-    //TODO fix
-    fun save() {
-        try {
-            childAPI.store()
-        } catch (e: Exception) {
-            System.err.println("Error writing to file: $e")
-        }
+//todo fix
+fun save() {
+    try {
+        childAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
     }
+}
 
-    fun load() {
-        try {
-            childAPI.load()
-        } catch (e: Exception) {
-            System.err.println("Error reading from file: $e")
-        }
+fun load() {
+    try {
+        childAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
     }
+}
 
 fun exitApp() {
     println("Exiting...bye")
@@ -279,20 +301,17 @@ private fun askUserToChooseChild(): Child? {
     listChildren()
     if (childAPI.numberOfChildren() > 0) {
         val child = childAPI.findChild(readNextInt("\nEnter the id of the child: "))
-        if (child != null) {
-            if (child.isNoteArchived) {
-                println("No child listed")
-            } else {
-                return child
-            }
+        return if (child == null) {
+            println("No child listed")
+            return null
         } else {
-            println("Child id is not valid")
+            return child
         }
     }
     return null
 }
 
-private fun askUserToChooseGift(child: Child): Child? {
+private fun askUserToChooseGift(child: Child): Gift? {
     if (child.numberOfGifts() > 0) {
         print(child.listGifts())
         return child.findOne(readNextInt("\nEnter the id of the gift: "))
@@ -303,12 +322,3 @@ private fun askUserToChooseGift(child: Child): Child? {
 }
 
 
-
-
-
-
-
-
-
-
-}

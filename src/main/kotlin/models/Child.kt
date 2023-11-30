@@ -30,7 +30,7 @@ data class Child(
         return gifts.removeIf { gift -> gift.giftId == id }
     }
 
-    fun update(id: Int, newGift: Gift): Boolean {
+    fun update(id: Int, newGift: Gift): Boolean { //todo why is it greyed out - fix
         val foundGift = findOne(id)
         if (foundGift != null){
             foundGift.giftName = newGift.giftName
@@ -45,16 +45,16 @@ data class Child(
     }
 
 
-    fun getCostOfList(): Int {
+    fun getCostOfList(): Int { //todo why is it greyed out - fix
         var totalCost = 0
-            for (gift in gifts) {
-                totalCost += gift.cost
-            }
+        for (gift in gifts) {
+            totalCost += gift.cost
+        }
 
         return totalCost
     }
 
-    fun GiftItems() =
+    fun listGifts() =
         if (gifts.isEmpty())  "\tNO GIFTS ADDED"
         else  Utilities.formatSetString(gifts)
 
