@@ -37,8 +37,6 @@ data class Child(
             foundGift.cost = newGift.cost
             foundGift.whereToBuy = newGift.whereToBuy
             foundGift.category = newGift.category
-            foundGift.minAge = newGift.minAge
-            foundGift.recommendedGender = newGift.recommendedGender
             return true
         }
         return false
