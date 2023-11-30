@@ -138,12 +138,17 @@ class ChildAPI() {
         }
     }
 
-    fun store() {
-        TODO("Not yet implemented")
+    //todo fix
+    @Throws(Exception::class)
+    fun load() {
+        val serializer = null
+        children = serializer.read() as ArrayList<Child>
     }
 
-    fun load() {
-        TODO("Not yet implemented")
+    @Throws(Exception::class)
+    fun store() {
+        val serializer = null
+        serializer.write(children)
     }
 
 
