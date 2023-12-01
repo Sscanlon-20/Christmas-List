@@ -7,8 +7,6 @@ data class Child(
     var childName: String,
     var childGender: Char = 'n',
     var childAge: Int = 0,
-    var behaviour: Boolean = false,
-    var totalAmount: Int = 0,
     var gifts: MutableSet<Gift> = mutableSetOf()) {
 
 
@@ -30,27 +28,11 @@ data class Child(
         return gifts.removeIf { gift -> gift.giftId == id }
     }
 
-    fun update(id: Int, newGift: Gift): Boolean { //todo why is it greyed out - fix
-        val foundGift = findOne(id)
-        if (foundGift != null){
-            foundGift.giftName = newGift.giftName
-            foundGift.cost = newGift.cost
-            foundGift.whereToBuy = newGift.whereToBuy
-            foundGift.category = newGift.category
-            foundGift.minAge = newGift.minAge
-            foundGift.recommendedGender = newGift.recommendedGender
-            return true
-        }
-        return false
-    }
-
-
-    fun getCostOfList(): Int { //todo why is it greyed out - fix
+    fun getCostOfList(): Int {
         var totalCost = 0
             for (gift in gifts) {
                 totalCost += gift.cost
             }
-
         return totalCost
     }
 
@@ -59,8 +41,7 @@ data class Child(
         else  Utilities.formatSetString(gifts)
 
     override fun toString(): String {
-        return "Child(childId=$childId, childName='$childName', childGender=$childGender, childAge=$childAge, " +
-                "behaviour=$behaviour, totalAmount=$totalAmount)"
+        return "Child(childId=$childId, childName='$childName', childGender=$childGender, childAge=$childAge)"
     }
 
 

@@ -2,11 +2,13 @@ package controllers
 
 import models.Child
 import models.Gift
+import persistance.Serializer
 import utils.Utilities.formatListString
 import utils.ValidateInput.isValidListIndex
 
-class ChildAPI() {
+class ChildAPI(serializerType: Serializer) {
 
+    private var serializer: Serializer = serializerType
     private var children = ArrayList<Child>()
 
     // ----------------------------------------------
@@ -31,8 +33,6 @@ class ChildAPI() {
             foundChild.childName = child.childName
             foundChild.childGender = child.childGender
             foundChild.childAge = child.childAge
-            foundChild.behaviour = child.behaviour
-            foundChild.totalAmount = child.totalAmount
             return true
         }
         return false
@@ -46,8 +46,6 @@ class ChildAPI() {
             foundGift.cost = gift.cost
             foundGift.whereToBuy = gift.whereToBuy
             foundGift.category = gift.category
-            foundGift.minAge = gift.minAge
-            foundGift.recommendedGender = gift.recommendedGender
             return true
         }
         return false
@@ -64,7 +62,7 @@ class ChildAPI() {
     fun numberOfChildren() = children.size
 
 
-    fun searchChildrenByName(searchString: String) =
+    fun searchChildByName(searchString: String) =
         formatListString(
             children.filter { child -> child.childName.contains(searchString, ignoreCase = true) }
         )
@@ -90,10 +88,6 @@ class ChildAPI() {
     //  SEARCHING METHODS
     // ---------------------------------------------
     fun findChild(childId : Int) =  children.find{ it.childId == childId}
-    fun searchChildByName(searchString: String) =
-        formatListString(
-            children.filter { child -> child.childName.contains(searchString, ignoreCase = true) }
-        )
 
     fun searchGiftByContents(searchString: String): String {
         return if (numberOfChildren() == 0) "No notes stored"
@@ -111,22 +105,6 @@ class ChildAPI() {
         }
     }
 
-    // ----------------------------------------------
-    //  LISTING METHODS FOR ITEMS
-    // ----------------------------------------------
-    fun listGifts(): String { //todo why is it greyed out - fix
-        return if (numberOfChildren() == 0) "No children stored"
-        else {
-            var listGifts = ""
-            for (child in children) {
-                for (gift in child.gifts) {
-                    listGifts += child.childName + ": " + gift.giftName + "\n"
-                }
-            }
-            listGifts
-        }
-    }
-
     fun listChildrenOver3(): String {
         return if (children.isEmpty()) "No children stored"
         else {
@@ -138,16 +116,13 @@ class ChildAPI() {
         }
     }
 
-    //todo fix
     @Throws(Exception::class)
     fun load() {
-        val serializer = null
         children = serializer.read() as ArrayList<Child>
     }
 
     @Throws(Exception::class)
     fun store() {
-        val serializer = null
         serializer.write(children)
     }
 

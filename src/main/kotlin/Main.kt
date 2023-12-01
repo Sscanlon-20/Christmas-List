@@ -1,14 +1,16 @@
+
 import controllers.ChildAPI
 import models.Child
 import models.Gift
+import persistence.JSONSerializer
 import utils.ScannerInput.readNextChar
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
-import utils.ValidateInput
+import java.io.File
 import kotlin.system.exitProcess
 
-private val childAPI = ChildAPI()
-
+//private val childAPI = ChildAPI(XMLSerializer(File("notes.xml")))
+private val childAPI = ChildAPI(JSONSerializer(File("notes.json")))
 fun main() = runMenu()
 fun runMenu() {
     do {
@@ -23,63 +25,40 @@ fun runMenu() {
             7 -> deleteGiftFromChild()
 
             8 -> searchChildByName()
+            9 -> searchGiftByType()
+            10 -> totalCostOfChildsList()
 
-            9 -> searchGifts()
-            10 -> generateAgift()
-            11 -> listAllGiftsForChild()
-            12 -> generateASuprise()
-
-            13 -> save()
-            14 -> load()
+            11 -> save()
+            12 -> load()
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
     } while (true)
 }
 
-fun generateASuprise() {
-    TODO("Not yet implemented")
-}
-
-fun listAllGiftsForChild() {
-    TODO("Not yet implemented")
-}
-
-fun generateAgift() {
-    TODO("Not yet implemented")
-}
 
 fun mainMenu(): Int {
     var readNextInt = readNextInt(
         """ 
-             > --------------------------------------------------------- 
-             > |          Christmas Shopping List                      |
-             > ---------------------------------------------------------
-             > | NOTE MENU                                             |
-             > |   1) Add a child                                      |
-             > |   2) List children                                    |
-             > |   3) Update a child                                   |
-             > |   4) Delete a child                                   |
-             > ---------------------------------------------------------
-             > | ITEM MENU                                             | 
-             > |   5) Add gift to a child                              |
-             > |   6) Update gift details for a child                  |
-             > |   7) Delete a gift from child                         |
-             > ---------------------------------------------------------
-             > | REPORT MENU FOR NOTES                                 | 
-             > |   8) Search for all children (by name)                |
-             > --------------------------------------------------------- 
-             > | REPORT MENU FOR ITEMS 
-             >     9) Search Gift                                     |                                
-             > |   10) Generate a gift                                 |
-             > |   11) Add or remove gifts (depending on total amount) |
-             > |   12) Generate a surprise (if child is good)          | 
-             > ---------------------------------------------------------
-             > |   13) Save                                            |
-             > |   14) Load                                            |
-             > ---------------------------------------------------------
-             > |   0) Exit                                             |
-             > --------------------------------------------------------- 
+             > -------------------------------------------------------------------------------
+             > |                        Christmas Shopping List                              |
+             > -------------------------------------------------------------------------------
+             > | CHILD MENU                     |  GIFT MENU                                 |
+             > |   1) Add a child               |    5) Add gift to a child                  |
+             > |   2) List children             |    6) Update gift details for a child      |
+             > |   3) Update a child            |    7) Delete a gift from child             |
+             > |   4) Delete a child            |                                            |
+             > -------------------------------------------------------------------------------
+             > |                             REPORT MENU                                     |
+             > |                   8)  Search for all children (by name)                     |
+             > |                   9)  Search gift by type                                   |
+             > |                   10) Total cost of child's list                            |
+             > -------------------------------------------------------------------------------
+             > |                              11) Save                                       |
+             > |                              12) Load                                       |
+             > -------------------------------------------------------------------------------
+             > |                              0) Exit                                        |
+             > -------------------------------------------------------------------------------
              > ==>> """.trimMargin(">")
     )
     return readNextInt
@@ -93,16 +72,12 @@ fun addChild() {
     val childName = readNextLine("Enter the child's name: ")
     val childGender = readNextChar("Enter gender (b or g): ")
     val childAge = readNextInt("Enter a child's ages: ")
-    val behaviour = ValidateInput.readYN("Was the child good or bad (y/n)? ")
-    val totalAmount = readNextInt("How much should the child's gifts amount to? ")
 
     val isAdded = childAPI.add(
         Child(
             childName = childName,
             childGender = childGender,
-            childAge = childAge,
-            behaviour = behaviour,
-            totalAmount = totalAmount
+            childAge = childAge
         )
     )
 
@@ -153,12 +128,9 @@ fun updateChild() {
             val childName = readNextLine("Enter the child's name: ")
             val childGender = readNextChar("Enter gender (b or g): ")
             val childAge = readNextInt("Enter a child's ages: ")
-            val behaviour = ValidateInput.readYN("Was the child good or bad (y/n)? ")
-            val totalAmount = readNextInt("How much should the child's gifts amount to? ")
-
             if (childAPI.updateChild(
                     indexToUpdate,
-                    Child(0, childName, childGender, childAge, behaviour, totalAmount)
+                    Child(0, childName, childGender, childAge)
                 )
             ) {
                 println("Update Successful")
@@ -199,8 +171,8 @@ fun searchChildByName() {
 //------------------------------------
 //GIFT REPORTS MENU
 //------------------------------------
-fun searchGifts() {
-    val searchContents = readNextLine("Enter the gift contents to search by: ")
+fun searchGiftByType() {
+    val searchContents = readNextLine("Enter the type of toy to search for: (eg.teddy, doll or bike)")
     val searchResults = childAPI.searchGiftByContents(searchContents)
     if (searchResults.isEmpty()) {
         println("No items found")
@@ -261,17 +233,16 @@ fun deleteGiftFromChild() {
     }
 }
 
-fun searchChildren() { //todo why greyed out how to fix
-    val searchChild = readNextLine("Enter the description to search by: ")
-    val searchResults = childAPI.searchChildrenByName(searchChild)
-    if (searchResults.isEmpty()) {
-        println("No notes found")
-    } else {
-        println(searchResults)
-    }
-}
 
-//todo fix
+fun totalCostOfChildsList() { //todo fix
+    val child: Child? = askUserToChooseChild()
+    if (child == null) {
+        println("No children found")
+    } else {
+            println(child.getCostOfList())
+        }
+    }
+
 fun save() {
     try {
         childAPI.store()

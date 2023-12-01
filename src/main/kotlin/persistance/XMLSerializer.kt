@@ -3,6 +3,7 @@ package persistence
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.DomDriver
 import models.Child
+import models.Gift
 import persistance.Serializer
 import java.io.File
 import java.io.FileReader
@@ -13,7 +14,7 @@ class XMLSerializer(private val file: File) : Serializer {
     @Throws(Exception::class)
     override fun read(): Any {
         val xStream = XStream(DomDriver())
-        xStream.allowTypes(arrayOf(Child::class.java))
+        xStream.allowTypes(arrayOf(Child::class.java, Gift::class.java))
         val inputStream = xStream.createObjectInputStream(FileReader(file))
         val obj = inputStream.readObject() as Any
         inputStream.close()
@@ -28,3 +29,5 @@ class XMLSerializer(private val file: File) : Serializer {
         outputStream.close()
     }
 }
+
+
