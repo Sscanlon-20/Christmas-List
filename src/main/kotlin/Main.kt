@@ -30,12 +30,12 @@ fun runMenu() {
 
             11 -> save()
             12 -> load()
+
             0 -> exitApp()
             else -> println("Invalid menu choice: $option")
         }
     } while (true)
 }
-
 
 fun mainMenu(): Int {
     var readNextInt = readNextInt(
@@ -114,9 +114,9 @@ fun listChildren() {
 fun listAllChildren() = println(childAPI.listAllChildren())
 
 fun listByGender()
-    { val childGender = readNextChar("Enter gender (b or g): ")
-       println(childAPI.listByGender(childGender))
-    }
+{ val childGender = readNextChar("Enter gender (b or g): ")
+    println(childAPI.listByGender(childGender))
+}
 
 fun listChildrenOver3() = println(childAPI.listChildrenOver3())
 
@@ -189,10 +189,10 @@ private fun addGiftToChild() {
     if (child != null) {
         if (child.addGift(Gift(
                 giftName = readNextLine("\t Gift Name: "),
-                whereToBuy = readNextLine("\t Where to buy it"),
+                whereToBuy = readNextLine("\t Where to buy it: "),
                 cost = readNextInt("\t How much is it: "),
                 category = readNextLine("\t What category is it: "),
-        )))
+            )))
             println("Add Successful!")
         else println("Add NOT Successful")
     }
@@ -205,7 +205,7 @@ fun updateGiftDetailsForChild() {
         if (gift != null) {
             if (childAPI.updateGift(child.childId, gift.giftId,
                     Gift(giftName = readNextLine("\t Gift Name: "),
-                        whereToBuy = readNextLine("\t Where to buy it"),
+                        whereToBuy = readNextLine("\t Where to buy it: "),
                         cost = readNextInt("\t How much is it: "),
                         category = readNextLine("\t What category is it: "),))) {
                 println("Item contents updated")
@@ -291,13 +291,5 @@ private fun askUserToChooseGift(child: Child): Gift? {
         return null
     }
 }
-
-
-
-
-
-
-
-
 
 

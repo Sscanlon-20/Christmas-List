@@ -112,7 +112,7 @@ class ChildAPI(serializerType: Serializer) {
                 child.childAge >=3
             })
             if (listOfChildren.equals("")) "No children over 3"
-            else "$   $listOfChildren"
+            else "$listOfChildren"
         }
     }
 

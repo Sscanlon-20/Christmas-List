@@ -28,6 +28,7 @@ data class Child(
         return gifts.removeIf { gift -> gift.giftId == id }
     }
 
+
     fun getCostOfList(): Int {
         var totalCost = 0
             for (gift in gifts) {
