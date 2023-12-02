@@ -64,25 +64,45 @@ class ChildAPITest {
         }
     }
 
-    /*@Test @Nested //TODO HELP
-     inner class DeleteChildren {
+    @Nested
+    inner class ListChild {
 
+        @Test
+        fun `listAllChildren returns No children Stored message when ArrayList is empty`() {
+            assertEquals(0, emptyList!!.numberOfChildren())
+            assertTrue(emptyList!!.listAllChildren().lowercase().contains("no children stored"))
+        }
 
-         fun `deleting a Child that does not exist, returns null`() {
-             assertNull(emptyList!!.delete(0))
-             assertNull(populatedList!!.delete(-1))
-             assertNull(populatedList!!.delete(5))
-         }
+        @Test
+        fun `listAllChildren returns children when ArrayList has children stored`() {
+            assertEquals(4, populatedList!!.numberOfChildren())
+            val listString = populatedList!!.listAllChildren().lowercase()
+            assertTrue(listString.contains("amie"))
+            assertTrue(listString.contains("dylan"))
+            assertTrue(listString.contains("ruby"))
+            assertTrue(listString.contains("brian"))
+        }
 
-         @Test
-         fun `deleting a child that exists delete and returns deleted object`() {
-             assertEquals(5, populatedList!!.numberOfChildren())
-             assertEquals(childOne, populatedList!!.delete(4))
-             assertEquals(4, populatedList!!.numberOfChildren())
-             assertEquals(childTwo, populatedList!!.delete(0))
-             assertEquals(3, populatedList!!.numberOfChildren())
-         }
-     }*/
+        @Test
+        fun `listByGender returns No children when ArrayList is empty`() {
+            assertEquals(0, emptyList!!.numberOfChildren())
+            assertTrue(emptyList!!.listByGender('g').lowercase().contains("no children"))
+            assertTrue(emptyList!!.listByGender('b').lowercase().contains("no children"))
+        }
+
+        @Test
+        fun `listByGender returns children when ArrayList has children stored`() {
+            assertEquals(4, populatedList!!.numberOfChildren())
+            assertFalse(populatedList!!.listByGender('g').lowercase().contains("Ruby"))
+            assertFalse(populatedList!!.listByGender('b').lowercase().contains("Dylan"))
+        }
+    }
+
+    @Test
+        fun numberOfChildrenCalculatedCorrectly() {
+            assertEquals(4, populatedList!!.numberOfChildren())
+            assertEquals(0, emptyList!!.numberOfChildren())
+    }
 
     @Nested
     inner class UpdateChildren {
@@ -108,6 +128,38 @@ class ChildAPITest {
             assertEquals(2, populatedList!!.findChild(1)!!.childAge)
         }
     }
+
+    @Nested
+    inner class SearchMethods {
+
+        @Test
+        fun `search children by name returns no children when no children with that name exist`() {
+            // Searching a populated collection for a title that doesn't exist.
+            assertEquals(4, populatedList!!.numberOfChildren())
+            val searchResults = populatedList!!.searchChildByName("no results expected")
+            assertTrue(searchResults.isEmpty())
+            // Searching an empty collection
+            assertEquals(0, emptyList!!.numberOfChildren())
+            assertTrue(emptyList!!.searchChildByName("").isEmpty())
+        }
+
+        @Test
+        fun `search children by name returns children when children with that name exist`() {
+            assertEquals(4, populatedList!!.numberOfChildren())
+
+            // Searching a populated collection for a full name that exists (case matches exactly)
+            var searchResults = populatedList!!.searchChildByName("Dylan")
+            assertTrue(searchResults.contains("Dylan"))
+            assertFalse(searchResults.contains("Ruby"))
+
+            // Searching a populated collection for a partial title that exists (case doesn't match)
+            searchResults = populatedList!!.searchChildByName("dyLan")
+            assertTrue(searchResults.contains("Dylan"))
+            assertTrue(searchResults.contains("Dyl"))
+            assertFalse(searchResults.contains("Ruby"))
+        }
+    }
+
     @Nested
     inner class PersistenceTests {
 
@@ -189,16 +241,30 @@ class ChildAPITest {
     }
 }
 
+//COULDN'T GET THIS WORKING!!
+/*@Nested
+inner class DeleteChildren {
 
-//todo listchildren
+    @Test
+    fun `deleting a Child that does not exist, returns null`() {
+        assertNull(emptyList!!.delete(0))
+        assertNull(populatedList!!.delete(-1))
+        assertNull(populatedList!!.delete(5))
+    }
 
-//todo addGiftToChild
-//todo updateGiftDetailsForChild
-//todo deleteGiftFromChild
+    @Test
+    fun `deleting a child that exists delete and returns deleted object`() {
+        assertEquals(5, populatedList!!.numberOfChildren())
+        assertEquals(childOne, populatedList!!.delete(4))
+        assertEquals(4, populatedList!!.numberOfChildren())
+        assertEquals(childTwo, populatedList!!.delete(0))
+        assertEquals(3, populatedList!!.numberOfChildren())
+    }
+}*/
 
-//todo searchChildByName
-//todo searchGiftByType
-//todo totalCostOfChildsList
+
+
+
 
 
 
