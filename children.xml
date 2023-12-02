@@ -1,0 +1,28 @@
+<object-stream>
+  <list>
+    <models.Child>
+      <childId>0</childId>
+      <childName>Amie</childName>
+      <childGender>g</childGender>
+      <childAge>1</childAge>
+      <gifts class="linked-hash-set"/>
+      <lastGiftId>0</lastGiftId>
+    </models.Child>
+    <models.Child>
+      <childId>1</childId>
+      <childName>Dylan</childName>
+      <childGender>b</childGender>
+      <childAge>15</childAge>
+      <gifts class="linked-hash-set"/>
+      <lastGiftId>0</lastGiftId>
+    </models.Child>
+    <models.Child>
+      <childId>2</childId>
+      <childName>Ruby</childName>
+      <childGender>g</childGender>
+      <childAge>2</childAge>
+      <gifts class="linked-hash-set"/>
+      <lastGiftId>0</lastGiftId>
+    </models.Child>
+  </list>
+</object-stream>
