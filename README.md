@@ -25,3 +25,7 @@ While the above requirements provide a basic structure for the console app, I in
       Write unit tests for critical components of your application using JUnit. Aim for good test coverage to validate the correctness of your code.
 - <h4>Documentation:</h4>
       Include a README file with clear instructions on how to build, run, and test your console app. Provide information on the purpose of the application and any additional considerations for users or developers.
+
+<h2>Assignment Website</h2>
+
+[View Website](https://sscanlon-20.github.io/)
