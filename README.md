@@ -14,8 +14,8 @@ The console app must meet the following minimum requirements:
 - <h4>Main Class:</h4>
       Create a Main class responsible for user input and output. This class should provide a menu or command-line interface for users to interact with your application.
 
-<h3>Additional Work</h3>
-While the above requirements provide a basic structure for the console app, I will included the following aspects to enhance the overall quality of the assignment:
+<h3>Additional Considerations</h3>
+While the above requirements provide a basic structure for the console app, I intend to included the following aspects to enhance the overall quality of the assignment:
 
 - <h4>GitHub:</h4>
       Utilize version control using Git and host your repository on GitHub. Make meaningful commits and maintain a clean and well-documented repository.
