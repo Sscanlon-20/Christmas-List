@@ -11,11 +11,10 @@ object Utilities {
     @JvmStatic
     fun formatListString(notesToFormat: List<Child>): String =
         notesToFormat
-            .joinToString(separator = "\n") { child ->  "$child" }
+            .joinToString(separator = "\n") { child -> "$child" }
 
     @JvmStatic
     fun formatSetString(itemsToFormat: Set<Gift>): String =
         itemsToFormat
-            .joinToString(separator = "\n") { gift ->  "\t$gift" }
-
+            .joinToString(separator = "\n") { gift -> "\t$gift" }
 }

@@ -13,35 +13,35 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class ChildAPITest {
-        private var childOne: Child? = null
-        private var childTwo: Child? = null
-        private var childThree: Child? = null
-        private var childFour: Child? = null
-        private var populatedList: ChildAPI? = ChildAPI(XMLSerializer(File("notes.xml")))
-        private var emptyList: ChildAPI? = ChildAPI(XMLSerializer(File("notes.xml")))
+    private var childOne: Child? = null
+    private var childTwo: Child? = null
+    private var childThree: Child? = null
+    private var childFour: Child? = null
+    private var populatedList: ChildAPI? = ChildAPI(XMLSerializer(File("notes.xml")))
+    private var emptyList: ChildAPI? = ChildAPI(XMLSerializer(File("notes.xml")))
 
-        @BeforeEach
-        fun setup() {
-            childOne = Child(0, "Amie", 'g', 1)
-            childTwo = Child(1, "Dylan", 'b', 15)
-            childThree = Child(2, "Ruby", 'g', 2)
-            childFour= Child(3, "Brian", 'b', 10)
+    @BeforeEach
+    fun setup() {
+        childOne = Child(0, "Amie", 'g', 1)
+        childTwo = Child(1, "Dylan", 'b', 15)
+        childThree = Child(2, "Ruby", 'g', 2)
+        childFour = Child(3, "Brian", 'b', 10)
 
-            populatedList!!.add(childOne!!)
-            populatedList!!.add(childTwo!!)
-            populatedList!!.add(childThree!!)
-            populatedList!!.add(childFour!!)
-        }
+        populatedList!!.add(childOne!!)
+        populatedList!!.add(childTwo!!)
+        populatedList!!.add(childThree!!)
+        populatedList!!.add(childFour!!)
+    }
 
-        @AfterEach
-        fun tearDown() {
-            childOne= null
-            childTwo = null
-            childThree = null
-            childFour = null
-            populatedList = null
-            emptyList = null
-        }
+    @AfterEach
+    fun tearDown() {
+        childOne = null
+        childTwo = null
+        childThree = null
+        childFour = null
+        populatedList = null
+        emptyList = null
+    }
 
     @Nested
     inner class AddChild {
@@ -99,9 +99,9 @@ class ChildAPITest {
     }
 
     @Test
-        fun numberOfChildrenCalculatedCorrectly() {
-            assertEquals(4, populatedList!!.numberOfChildren())
-            assertEquals(0, emptyList!!.numberOfChildren())
+    fun numberOfChildrenCalculatedCorrectly() {
+        assertEquals(4, populatedList!!.numberOfChildren())
+        assertEquals(0, emptyList!!.numberOfChildren())
     }
 
     @Nested
@@ -115,7 +115,6 @@ class ChildAPITest {
 
         @Test
         fun `updating a child that exists returns true and updates`() {
-
             assertEquals(childTwo, populatedList!!.findChild(1))
             assertEquals("Dylan", populatedList!!.findChild(1)!!.childName)
             assertEquals('b', populatedList!!.findChild(1)!!.childGender)
@@ -182,23 +181,23 @@ class ChildAPITest {
         @Test
         fun `saving and loading an loaded collection in XML doesn't loose data`() {
             // Storing 3 notes to the notes.XML file.
-            val storingChilden = ChildAPI(XMLSerializer(File("children.xml")))
-            storingChilden.add(childOne!!)
-            storingChilden.add(childTwo!!)
-            storingChilden.add(childThree!!)
-            storingChilden.store()
+            val storingChildren = ChildAPI(XMLSerializer(File("children.xml")))
+            storingChildren.add(childOne!!)
+            storingChildren.add(childTwo!!)
+            storingChildren.add(childThree!!)
+            storingChildren.store()
 
             // Loading notes.xml into a different collection
             val loadedChildren = ChildAPI(XMLSerializer(File("children.xml")))
             loadedChildren.load()
 
             // Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
-            assertEquals(3, storingChilden.numberOfChildren())
+            assertEquals(3, storingChildren.numberOfChildren())
             assertEquals(3, loadedChildren.numberOfChildren())
-            assertEquals(storingChilden.numberOfChildren(), loadedChildren.numberOfChildren())
-            assertEquals(storingChilden.findChild(0), loadedChildren.findChild(0))
-            assertEquals(storingChilden.findChild(1), loadedChildren.findChild(1))
-            assertEquals(storingChilden.findChild(2), loadedChildren.findChild(2))
+            assertEquals(storingChildren.numberOfChildren(), loadedChildren.numberOfChildren())
+            assertEquals(storingChildren.findChild(0), loadedChildren.findChild(0))
+            assertEquals(storingChildren.findChild(1), loadedChildren.findChild(1))
+            assertEquals(storingChildren.findChild(2), loadedChildren.findChild(2))
         }
 
         @Test
@@ -241,7 +240,7 @@ class ChildAPITest {
     }
 }
 
-//COULDN'T GET THIS WORKING!!
+// COULDN'T GET THIS WORKING!!
 /*@Nested
 inner class DeleteChildren {
 
@@ -261,10 +260,3 @@ inner class DeleteChildren {
         assertEquals(3, populatedList!!.numberOfChildren())
     }
 }*/
-
-
-
-
-
-
-
