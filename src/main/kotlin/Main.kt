@@ -9,7 +9,7 @@ import utils.ScannerInput.readNextLine
 import java.io.File
 import kotlin.system.exitProcess
 
-//private val childAPI = ChildAPI(XMLSerializer(File("notes.xml")))
+// private val childAPI = ChildAPI(XMLSerializer(File("notes.xml")))
 private val childAPI = ChildAPI(JSONSerializer(File("notes.json")))
 fun main() = runMenu()
 fun runMenu() {
@@ -64,9 +64,9 @@ fun mainMenu(): Int {
     return readNextInt
 }
 
-//------------------------------------
-//NOTE MENU
-//------------------------------------
+// ------------------------------------
+// NOTE MENU
+// ------------------------------------
 
 fun addChild() {
     val childName = readNextLine("Enter the child's name: ")
@@ -113,8 +113,8 @@ fun listChildren() {
 
 fun listAllChildren() = println(childAPI.listAllChildren())
 
-fun listByGender()
-{ val childGender = readNextChar("Enter gender (b or g): ")
+fun listByGender() {
+    val childGender = readNextChar("Enter gender (b or g): ")
     println(childAPI.listByGender(childGender))
 }
 
@@ -155,9 +155,9 @@ fun deleteChild() {
     }
 }
 
-//------------------------------------
-//CHILD REPORTS MENU
-//------------------------------------
+// ------------------------------------
+// CHILD REPORTS MENU
+// ------------------------------------
 fun searchChildByName() {
     val searchName = readNextLine("Enter the name to search by: ")
     val searchResults = childAPI.searchChildByName(searchName)
@@ -168,9 +168,9 @@ fun searchChildByName() {
     }
 }
 
-//------------------------------------
-//GIFT REPORTS MENU
-//------------------------------------
+// ------------------------------------
+// GIFT REPORTS MENU
+// ------------------------------------
 fun searchGiftByType() {
     val searchContents = readNextLine("Enter the type of toy to search for: (eg.teddy, doll or bike)")
     val searchResults = childAPI.searchGiftByContents(searchContents)
@@ -181,20 +181,25 @@ fun searchGiftByType() {
     }
 }
 
-//-------------------------------------------
-//GIFT MENU
-//-------------------------------------------
+// -------------------------------------------
+// GIFT MENU
+// -------------------------------------------
 private fun addGiftToChild() {
     val child: Child? = askUserToChooseChild()
     if (child != null) {
-        if (child.addGift(Gift(
-                giftName = readNextLine("\t Gift Name: "),
-                whereToBuy = readNextLine("\t Where to buy it: "),
-                cost = readNextInt("\t How much is it: "),
-                category = readNextLine("\t What category is it: "),
-            )))
+        if (child.addGift(
+                Gift(
+                        giftName = readNextLine("\t Gift Name: "),
+                        whereToBuy = readNextLine("\t Where to buy it: "),
+                        cost = readNextInt("\t How much is it: "),
+                        category = readNextLine("\t What category is it: ")
+                    )
+            )
+        ) {
             println("Add Successful!")
-        else println("Add NOT Successful")
+        } else {
+            println("Add NOT Successful")
+        }
     }
 }
 
@@ -203,11 +208,17 @@ fun updateGiftDetailsForChild() {
     if (child != null) {
         val gift: Gift? = askUserToChooseGift(child)
         if (gift != null) {
-            if (childAPI.updateGift(child.childId, gift.giftId,
-                    Gift(giftName = readNextLine("\t Gift Name: "),
-                        whereToBuy = readNextLine("\t Where to buy it: "),
-                        cost = readNextInt("\t How much is it: "),
-                        category = readNextLine("\t What category is it: "),))) {
+            if (childAPI.updateGift(
+                    child.childId,
+                    gift.giftId,
+                    Gift(
+                            giftName = readNextLine("\t Gift Name: "),
+                            whereToBuy = readNextLine("\t Where to buy it: "),
+                            cost = readNextInt("\t How much is it: "),
+                            category = readNextLine("\t What category is it: ")
+                        )
+                )
+            ) {
                 println("Item contents updated")
             } else {
                 println("Item contents NOT updated")
@@ -233,15 +244,14 @@ fun deleteGiftFromChild() {
     }
 }
 
-
-fun totalCostOfChildsList() { //todo fix
+fun totalCostOfChildsList() { // todo fix
     val child: Child? = askUserToChooseChild()
     if (child == null) {
         println("No children found")
     } else {
-            println(child.getCostOfList())
-        }
+        println(child.getCostOfList())
     }
+}
 
 fun save() {
     try {
@@ -264,9 +274,9 @@ fun exitApp() {
     exitProcess(0)
 }
 
-//------------------------------------
-//HELPER FUNCTIONS
-//------------------------------------
+// ------------------------------------
+// HELPER FUNCTIONS
+// ------------------------------------
 
 private fun askUserToChooseChild(): Child? {
     listChildren()
@@ -291,5 +301,3 @@ private fun askUserToChooseGift(child: Child): Gift? {
         return null
     }
 }
-
-

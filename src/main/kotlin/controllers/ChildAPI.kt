@@ -56,26 +56,33 @@ class ChildAPI(serializerType: Serializer) {
     // ----------------------------------------------
 
     fun listAllChildren() =
-        if (children.isEmpty()) "No children stored"
-        else formatListString(children)
+        if (children.isEmpty()) {
+            "No children stored"
+        } else {
+            formatListString(children)
+        }
 
     fun numberOfChildren() = children.size
-
 
     fun searchChildByName(searchString: String) =
         formatListString(
             children.filter { child -> child.childName.contains(searchString, ignoreCase = true) }
         )
 
-    fun listByGender(gender: Char): String
-    {
-        return if (children.isEmpty()) "No children stored"
-        else {
-            val listOfChildren = formatListString(children.filter { child ->
-                child.childGender == gender
-            })
-            if (listOfChildren.equals("")) "No children of this gender: $gender"
-            else "${ numberOfChildrenByGender(gender) } $gender children: $listOfChildren"
+    fun listByGender(gender: Char): String {
+        return if (children.isEmpty()) {
+            "No children stored"
+        } else {
+            val listOfChildren = formatListString(
+                children.filter { child ->
+                    child.childGender == gender
+                }
+            )
+            if (listOfChildren.equals("")) {
+                "No children of this gender: $gender"
+            } else {
+                "${ numberOfChildrenByGender(gender) } $gender children: $listOfChildren"
+            }
         }
     }
     fun numberOfChildrenByGender(gender: Char): Int = children.count { p: Child -> p.childGender == gender }
@@ -87,11 +94,12 @@ class ChildAPI(serializerType: Serializer) {
     // ----------------------------------------------
     //  SEARCHING METHODS
     // ---------------------------------------------
-    fun findChild(childId : Int) =  children.find{ it.childId == childId}
+    fun findChild(childId: Int) = children.find { it.childId == childId }
 
     fun searchGiftByContents(searchString: String): String {
-        return if (numberOfChildren() == 0) "No notes stored"
-        else {
+        return if (numberOfChildren() == 0) {
+            "No notes stored"
+        } else {
             var listOfChildren = ""
             for (child in children) {
                 for (gift in child.gifts) {
@@ -100,19 +108,28 @@ class ChildAPI(serializerType: Serializer) {
                     }
                 }
             }
-            if (listOfChildren == "") "No items found for: $searchString"
-            else listOfChildren
+            if (listOfChildren == "") {
+                "No items found for: $searchString"
+            } else {
+                listOfChildren
+            }
         }
     }
 
     fun listChildrenOver3(): String {
-        return if (children.isEmpty()) "No children stored"
-        else {
-            val listOfChildren = formatListString(children.filter { child ->
-                child.childAge >=3
-            })
-            if (listOfChildren.equals("")) "No children over 3"
-            else "$listOfChildren"
+        return if (children.isEmpty()) {
+            "No children stored"
+        } else {
+            val listOfChildren = formatListString(
+                children.filter { child ->
+                    child.childAge >= 3
+                }
+            )
+            if (listOfChildren.equals("")) {
+                "No children over 3"
+            } else {
+                "$listOfChildren"
+            }
         }
     }
 
@@ -125,6 +142,4 @@ class ChildAPI(serializerType: Serializer) {
     fun store() {
         serializer.write(children)
     }
-
-
 }
